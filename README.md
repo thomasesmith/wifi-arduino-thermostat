@@ -1,5 +1,5 @@
 # WiFi-Connected Arduino Heater Thermostat
-In addition to acting as a traditional heater thermostat (turning the heater on when the temperature falls below the set threshold temperature, and turning it off when it the temperature reaches or exceeds the set threshold temperature), it also sets up an mDNS HTTP server and creates endpoints to act as a RESTful API control interface.
+In addition to acting as a traditional heater thermostat (turning the heater on when the temperature falls below the set threshold temperature, and turning it off when it the temperature reaches or exceeds the set threshold temperature), it also sets up an mDNS HTTP server and creates endpoints to offer an HTTP API control interface.
 
 ### Hardware
 This was written on a $15 SparkFun ESP8266 "Thing" Board, an Arduino-compatible development board built around the ESP8266 (https://www.sparkfun.com/products/13711). This particular code also requires a DHT-22 or DHT-11 temperature and humidity sensor, a relay, and optionally an LED.
@@ -41,8 +41,9 @@ In these examples, I use the mDNS name in the URI, but whatever IP is given to y
         {"status": "success", "threshold_temp": 69.00} 
 
 ## TODO
-* Add an easier way to switch between using fahrenheit or celsius units of measurement. 
-* Should some of these endpoints actually be `PUT`s in order for this to be truly RESTful? I'll look in to that.
+This could stand to be improved in the following ways: 
+* The API isn't actually RESTful. There shouldn't be any verbs in the endpoints (i.e. 'up', 'down', 'off', 'on'), and I'm not yet taking advantage of the appropriate HTTP methods. So that should will eventually be adjusted.
+* I'd like to add an easier way to switch between using fahrenheit or celsius units of temperature measurement. 
 
 ## Contact
 You can tweet me at [@thomasesmith](http://twitter.com/thomasesmith) if you find any bugs or want me to address something. 
