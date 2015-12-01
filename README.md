@@ -15,25 +15,30 @@ You can make your UI in whatever manner you like and have it `GET` these URIs â€
 In these examples, I use the mDNS name in the URI, but whatever IP is given to your Thing when it connected will work fine too. JSON is returned.
 
 * `http://heater.local/status`   Returns all of the status information:
-*     {"status": "success", "temperature_fahrenheit": 70.88, "relative_humidity_percentage": 28.70,"heater_onoff": "off", "heater_currently_running": "no", "threshold_temp": 70.00 }
-   * `temperature_fahrenheit` Returns the current temperature in degrees fahrenheit (from the DHT sensor).
-   * `relative_humidity_percentage` Returns the current percentage of relative humidity (from the DHT sensor). 
-   * `heater_onoff` Whether or not the system is currently on. If this is set to on, the heater itself will turn off and on around the 'threshold_temp.' If it is off, it will not.
-   * `heater_currently_running` Whether or not the actual relay pin is raised and the heaters circuit is closed, meaning the heater itself is on. A value of 'yes' means the circuit is closed (heater is on), and 'no' means the circuit is open (heater is off).
-   * `threshold_temp` The temperature in fahrenheit the will trip the heater in to turning on. If 'heater_onoff' is set to on, and the temperature falls below that the threshold_temp, the heater circuit will close turning the heater on. It will not open it back up until the threshold temperature is reached again.
+
+        {"status": "success", "temperature_fahrenheit": 70.88, "relative_humidity_percentage": 28.70,"heater_onoff": "off", "heater_currently_running": "no", "threshold_temp": 70.00 }
+	* `temperature_fahrenheit` Returns the current temperature in degrees fahrenheit (from the DHT sensor).
+	* `relative_humidity_percentage` Returns the current percentage of relative humidity (from the DHT sensor). 
+	* `heater_onoff` Whether or not the system is currently on. If this is set to on, the heater itself will turn off and on around the 'threshold_temp.' If it is off, it will not.
+	* `heater_currently_running` Whether or not the actual relay pin is raised and the heaters circuit is closed, meaning the heater itself is on. A value of 'yes' means the circuit is closed (heater is on), and 'no' means the circuit is open (heater is off).
+ 	* `threshold_temp` The temperature in fahrenheit the will trip the heater in to turning on. If 'heater_onoff' is set to on, and the temperature falls below that the threshold_temp, the heater circuit will close turning the heater on. It will not open it back up until the threshold temperature is reached again.
    
 
 * `http://heater.local/on`       Turns heater system on. Responds with confirmation (this doesn't necessarily turn the actual heater on, it just allows the code to do so when the conditions are right):
-*        {"status": "success", "heater_onoff": "on"}
+
+        {"status": "success", "heater_onoff": "on"}
 
 * `http://heater.local/off`      Turns the heater system off. Responds with confirmation:
-*        {"status": "success", "heater_onoff": "off"}
+
+        {"status": "success", "heater_onoff": "off"}
 
 * `http://heater.local/up`       Adjusts threshold temperature up. Responds with new, current threshold value:
-*         {"status": "success", "threshold_temp": 71.00}
+
+        {"status": "success", "threshold_temp": 71.00}
 
 * `http://heater.local/down`     Adjusts threshold temperature down. Responds with new, current threshold value:
-*         {"status": "success", "threshold_temp": 69.00} 
+
+        {"status": "success", "threshold_temp": 69.00} 
 
 ## TODO
 * Add an easier way to switch between using fahrenheit or celsius units of measurement. 
