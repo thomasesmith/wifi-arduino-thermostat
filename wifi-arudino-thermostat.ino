@@ -5,11 +5,11 @@
 /* 
 WiFi-connected Heater Thermostat, by Thomas Smith (@thomasesmith)
 
+Please read README.md for more information at https://github.com/thomasesmith/wifi-arduino-thermostat
+
 Requires the Adafruit DHT Sensor Library be installed in to your Arduino libraries: https://github.com/adafruit/DHT-sensor-library.
 
-Please read README.md for more information
-
-The code will connect to your Thing to your WiFi AP and then responds with JSON to the following requests
+This code will connect your Thing to your WiFi AP and then respond with JSON to the following http requests:
 
 http://heater.local/status   Returns status information
 http://heater.local/on       Turns heater system on, responds with confirmation 
@@ -18,22 +18,21 @@ http://heater.local/up       Adjusts threshold temperature up, responds with cha
 http://heater.local/down     Adjusts threshold temperature down, responds with changed threshold value
 */
 
-#define DHT_PIN 12      // Pin that your DHT sensor will use
-#define DHTTYPE DHT22   // Change 'DHT22' to 'DHT11' if you're using a DHT11 sensor
-#define LED_PIN 12      // Pin of your status LED (use 5 if you want to use the Things on-board LED)
-#define RELAY_PIN 16    // Pin of your your relay
+#define DHT_PIN 12      // Set the pin number to use to read your DHT sensor
+#define DHTTYPE DHT22   // Set to 'DHT22' or 'DHT11', depending on which sensor you're using
+#define LED_PIN 5       // Set the pin number of your status LED (5 is the Thing's on-board LED)
+#define RELAY_PIN 16    // Set the pin number of your your relay
 
-// WiFi AP Connection Parameters
-const char WiFiSSID[] = ""; // Set this to your APs SSID name
-const char WiFiPSK[] =  ""; // Set this to your APs WiFi Key 
-
+// Set your AP's WiFi connection parameters
+const char WiFiSSID[] = ""; // Your APs SSID name
+const char WiFiPSK[] =  ""; // Your APs WiFi Key 
 
 
 ////////////////////////////////////////////
 
-float TEMP_THRESHOLD = 70.0;  // Power-up default of threshold temp.
-float CURRENT_TEMP = 0;       // These two will get set on power-up, and then continually
-float CURRENT_RH = 0; 
+float TEMP_THRESHOLD = 72.0;    // Sets a power-up default of threshold temp.
+float CURRENT_TEMP = 0;         // This will get set on power-up, and then continually
+float CURRENT_RH = 0;           // This will get set on power-up, and then continually
 
 unsigned long MILLIS_OF_LAST_POLL = 0;
 unsigned long MILLIS_OF_LAST_HEATER_TURN_ON = 0;
@@ -59,7 +58,7 @@ void loop()
 {  
     unsigned long currentMillis = millis();
 
-    // Poll the temp from the DHT every 5 seconds or so
+    // Poll the temperature from the DHT about every 5 seconds
     if ((currentMillis - MILLIS_OF_LAST_POLL) > 5000) {
         getTemp(); // Sets the CURRENT_TEMP var 
         getRH(); // Sets the CURRENT_RH var 
@@ -72,36 +71,36 @@ void loop()
     if (!client) {
 
         if (CURRENT_TEMP < (TEMP_THRESHOLD) && HEATER_POWER == 1) {
-            digitalWrite(RELAY_PIN, HIGH); // Close the thermostat circuits (on)
+            digitalWrite(RELAY_PIN, HIGH); // Close the thermostat circuits ( heater on)
             MILLIS_OF_LAST_HEATER_TURN_ON = currentMillis; // Log millis of last power-on
         } else {
             if ((currentMillis - MILLIS_OF_LAST_HEATER_TURN_ON) > 90000) {
                 // If the heater was turned on, we should let it run for at least 90 seconds
-                // before letting the threshold turn it off, eegardless of whether or not the
+                // before letting the code turn it off, regardless of whether or not the
                 // threshold temperature has been reached or exceeded.
-                // Without this, the relay ticks on and off frantically near the threshold amount. 
+                // Without this delay, the relay (and heater) will tick on and off frantically 
+                // when the room nears the threshold temperature. 
 
-                digitalWrite(RELAY_PIN, LOW); // Open the thermostat circuit (off)
+                digitalWrite(RELAY_PIN, LOW); // Open the thermostat circuit (heater off)
             }
         }
 
-        return; // This loop ends here... 
+        return; // This iteration of the main loop will end here... 
     }
 
-    // ...unless there was an http request...
+    // but if there was an http request...
 
-    // Read the first line of the request
+    // Get the first line of the request
     String req = client.readStringUntil('\r');
     Serial.println(req);
     client.flush();
                
-    String httpResponseCode = "";
-    String jsonResponse = "";
-    int heaterOnOff = digitalRead(RELAY_PIN); // Get the current status of the relay
-  
-    if (req.indexOf("/status") != -1) {
-        httpResponseCode = "200 OK";
+    String httpResponseCode = "200 OK"; // Set this to 200 by default. Overwrite if necessary
+    String jsonResponse = ""; // Here's where we'll put our JSON output
+    
+    int heaterOnOff = digitalRead(RELAY_PIN); // Gets the current status of the relay
 
+    if (req.indexOf("/status") != -1) {
         jsonResponse =  "{\"status\": \"success\", ";
         jsonResponse += "\"temperature_fahrenheit\": " + String(CURRENT_TEMP) + ", \"relative_humidity_percentage\": " + String(CURRENT_RH) + ",";
         jsonResponse += "\"heater_onoff\": \"";
@@ -124,46 +123,36 @@ void loop()
         jsonResponse += "\", ";
         jsonResponse += "\"threshold_temp\": " + String(TEMP_THRESHOLD) + " ";
         jsonResponse += "}";   
-    
     } else if (req.indexOf("/on") != -1) {
-
         HEATER_POWER = 1;
-        httpResponseCode = "200 OK";
         jsonResponse = "{\"status\": \"success\", ";
-        jsonResponse += "\"heater_onoff\": \"on\" }";
-
+        jsonResponse += "\"heater_onoff\": \"on\"}";
     } else if (req.indexOf("/off") != -1) {
         HEATER_POWER = 0;
-        httpResponseCode = "200 OK";
         jsonResponse = "{\"status\": \"success\", ";
-        jsonResponse += "\"heater_onoff\": \"off\" }";
-
+        jsonResponse += "\"heater_onoff\": \"off\"}";
     } else if (req.indexOf("/down") != -1) {
         TEMP_THRESHOLD--;
-        httpResponseCode = "200 OK";
         jsonResponse = "{\"status\": \"success\", \"threshold_temp\": " + String(TEMP_THRESHOLD) + "}";
-
     } else if (req.indexOf("/up") != -1) {
         TEMP_THRESHOLD++;
-        httpResponseCode = "200 OK";
         jsonResponse = "{\"status\": \"success\", \"threshold_temp\": " + String(TEMP_THRESHOLD) + "}";
-
     } else {
+        // Any other requests we'll get back a 501
         httpResponseCode = "501 Not Implemented";
         jsonResponse = "{\"status\": \"error\"}";
-
     } 
 
     client.flush();
 
-    // Prepare the response and send it
+    // Prepare the HTTP response
     String s = "HTTP/1.1 ";
     s += httpResponseCode;
     s += "\r\n";
-    s += "Content-Type: text/plain\r\n\r\n";
+    s += "Content-Type: application/json\r\n\r\n";
     s += jsonResponse;
 
-    // Send the response to the client
+    // Send the response to the client and the console
     Serial.println("- Responding...");
     Serial.println(s);
     client.print(s);
@@ -194,7 +183,7 @@ void connectWiFi()
         digitalWrite(LED_PIN, ledStatus);
         ledStatus = (ledStatus == HIGH) ? LOW : HIGH;
 
-        delay(100); // Necessary delay to let the ESP2866 do some stuff
+        delay(100); // Necessary delay to let the ESP8266 do some stuff
     }
 
     Serial.println("- WiFi connected!");  
@@ -205,10 +194,10 @@ void connectWiFi()
 void setupMDNS()
 {
     // MDNS.begin(<domain>) will set up an mDNS that you can point to
-    // "<domain>.local"
+    // "<domain>.local". I have set it here as "heater"
 
     if (!MDNS.begin("heater"))  {   // will respond to http://heater.local/
-        Serial.println("- Error setting up MDNS responder!");
+        Serial.println("- Error setting up MDNS responder! Use IP address.");
 
         while(1) { 
             delay(1000);
@@ -229,10 +218,9 @@ void initHardware()
     digitalWrite(RELAY_PIN, LOW);
 }
 
-
 String getTemp()
 {
-    float f = dht.readTemperature(true);
+    float f = dht.readTemperature(true); // 'true' argument returns degrees in Fahrenheit
     String r = "";
 
     if (isnan(f)) {

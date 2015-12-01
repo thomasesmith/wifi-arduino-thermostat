@@ -2,11 +2,11 @@
 In addition to acting as a traditional heater thermostat (turning the heater on when the temperature falls below the set threshold temperature, and turning it off when it the temperature reaches or exceeds the set threshold temperature), it also sets up an mDNS HTTP server and creates endpoints to act as a RESTful API control interface.
 
 ### Hardware
-This was written on a $15 SparkFun Thing Board, An Arduino-compatible ESP2866 wifi module (https://www.sparkfun.com/products/13711). This particular code also requires a DHT-22 or DHT-11 temperature and humidity sensor, a relay, and optionally an LED.
+This was written on a $15 SparkFun ESP8266 "Thing" Board, an Arduino-compatible development board built around the ESP8266 (https://www.sparkfun.com/products/13711). This particular code also requires a DHT-22 or DHT-11 temperature and humidity sensor, a relay, and optionally an LED.
 
-The two wires leading to your heater should be inserted in to the "NO" (Normally Open) side of your relay, so that the circuit to your heater is open by default, and the circuit will need to be closed in order to turn the heater on.
+The two wires leading to your heater should be inserted in to the "NO" (Normally Open) side of your relay, so that the circuit to your heater is open by default, and the circuit will need to be closed in order to turn the heater on. 
 
-### Required Libraries
+### Required Library
 This Arduino sketch also requires the Adafruit DHT Sensor Library be installed in to your Arduino libraries. You can find it at https://github.com/adafruit/DHT-sensor-library.
 
 ### Endpoints
