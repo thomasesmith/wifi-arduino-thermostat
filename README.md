@@ -23,17 +23,17 @@ In these examples, I use the mDNS name in the URI, but whatever IP is given to y
    * `threshold_temp` The temperature in fahrenheit the will trip the heater in to turning on. If 'heater_onoff' is set to on, and the temperature falls below that the threshold_temp, the heater circuit will close turning the heater on. It will not open it back up until the threshold temperature is reached again.
    
 
-* `http://heater.local/on`       Turns heater system on, responds with confirmation (this doesn't necessarily turn the actual heater on, it just allows the code to do so when the conditions are right):
-*     {"status": "success", "heater_onoff": "on" }
+* `http://heater.local/on`       Turns heater system on. Responds with confirmation (this doesn't necessarily turn the actual heater on, it just allows the code to do so when the conditions are right):
+*      {"status": "success", "heater_onoff": "on" }
 
-* `http://heater.local/off`      Turns the heater system off, responds with confirmation:
-*     {"status": "success", "heater_onoff": "off" }
+* `http://heater.local/off`      Turns the heater system off. Responds with confirmation:
+*      {"status": "success", "heater_onoff": "off" }
 
-* `http://heater.local/up`       Adjusts threshold temperature up, responds with new, current threshold value:
-*     {"status": "success", "threshold_temp": 71.00}
+* `http://heater.local/up`       Adjusts threshold temperature up. Responds with new, current threshold value:
+*      {"status": "success", "threshold_temp": 71.00}
 
-* `http://heater.local/down`     Adjusts threshold temperature down, responds with new, current threshold value:
-*     {"status": "success", "threshold_temp": 69.00} 
+* `http://heater.local/down`     Adjusts threshold temperature down. Responds with new, current threshold value:
+*      {"status": "success", "threshold_temp": 69.00} 
 
 ## TODO
 * Add an easier way to switch between using fahrenheit or celsius units of measurement. 
