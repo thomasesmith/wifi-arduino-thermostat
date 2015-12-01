@@ -33,7 +33,7 @@ In these examples, I use the mDNS name in the URI, but whatever IP is given to y
 *      {"status": "success", "threshold_temp": 71.00}
 
 * `http://heater.local/down`     Adjusts threshold temperature down. Responds with new, current threshold value:
-*      {"status": "success", "threshold_temp": 69.00} 
+*       {"status": "success", "threshold_temp": 69.00} 
 
 ## TODO
 * Add an easier way to switch between using fahrenheit or celsius units of measurement. 
