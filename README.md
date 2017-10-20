@@ -46,4 +46,4 @@ This could stand to be improved in the following ways:
 * I'd like to add an easier way to switch between using fahrenheit or celsius units of temperature measurement. 
 
 ## Contact
-You can tweet me at [@thomasesmith](http://twitter.com/thomasesmith) if you find any bugs or want me to address something. 
+You can tweet me at [@itsmetomsmith](http://twitter.com/itsmetomsmith) if you find any bugs or want me to address something. 
