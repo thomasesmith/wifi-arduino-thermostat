@@ -3,7 +3,7 @@
 #include "DHT.h"
 
 /* 
-WiFi-connected Heater Thermostat, by Thomas Smith (@thomasesmith)
+WiFi-connected Heater Thermostat, by Thomas Smith (@itsmetomsmith), 12/2015
 
 Please read README.md for more information at https://github.com/thomasesmith/wifi-arduino-thermostat
 
